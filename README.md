@@ -1,3 +1,5 @@
+[![Go](https://github.com/abiosoft/caddy-hmac/workflows/Go/badge.svg)](https://github.com/abiosoft/caddy-hmac/actions)
+
 # caddy-hmac
 
 Caddy v2 hmac middleware
