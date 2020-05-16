@@ -29,9 +29,9 @@ func init() {
 // HMAC implements an HTTP handler that
 // validates request body with hmac.
 type HMAC struct {
-	Hash   string `json:"hash,omitempty"`
-	Secret string `json:"secret,omitempty"`
-	Name   string `json:"name,omitempty"`
+	Algorithm string `json:"algorithm,omitempty"`
+	Secret    string `json:"secret,omitempty"`
+	Name      string `json:"name,omitempty"`
 
 	hasher func() hash.Hash
 }
@@ -46,12 +46,12 @@ func (HMAC) CaddyModule() caddy.ModuleInfo {
 
 // Provision implements caddy.Provisioner.
 func (m *HMAC) Provision(ctx caddy.Context) error {
-	switch hashType(m.Hash) {
-	case hashSha1:
+	switch hashAlgorithm(m.Algorithm) {
+	case algSha1:
 		m.hasher = sha1.New
-	case hashSha256:
+	case algSha256:
 		m.hasher = sha256.New
-	case hashMd5:
+	case algMd5:
 		m.hasher = md5.New
 	}
 	return nil
@@ -59,8 +59,8 @@ func (m *HMAC) Provision(ctx caddy.Context) error {
 
 // Validate implements caddy.Validator.
 func (m HMAC) Validate() error {
-	if !hashType(m.Hash).valid() {
-		return fmt.Errorf("unsupported hash type '%s'", m.Hash)
+	if !hashAlgorithm(m.Algorithm).valid() {
+		return fmt.Errorf("unsupported hash type '%s'", m.Algorithm)
 	}
 	if m.hasher == nil {
 		// this will never happen
@@ -77,7 +77,7 @@ func (m HMAC) replacerKey() string {
 }
 
 // UnmarshalCaddyfile implements caddyfile.Unmarshaler.
-//    hmac [<name>] <hash> <secret>
+//    hmac [<name>] <algorithm> <secret>
 //
 func (m *HMAC) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
@@ -85,9 +85,9 @@ func (m *HMAC) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 
 		switch len(args) {
 		case 2:
-			m.Hash, m.Secret = args[0], args[1]
+			m.Algorithm, m.Secret = args[0], args[1]
 		case 3:
-			m.Name, m.Hash, m.Secret = args[0], args[1], args[2]
+			m.Name, m.Algorithm, m.Secret = args[0], args[1], args[2]
 		default:
 			return d.Err("unexpected number of arguments")
 		}

@@ -6,25 +6,24 @@ import (
 	"hash"
 )
 
-type hashType string
+type hashAlgorithm string
 
-func (h hashType) valid() bool {
+func (h hashAlgorithm) valid() bool {
 	switch h {
-	case hashSha1:
-	case hashSha256:
-	case hashMd5:
+	case algSha1:
+	case algSha256:
+	case algMd5:
 	default:
 		return false
 	}
 	return true
 }
 
-// hashFunctions
+// hash algorithms
 const (
-	hashInvalid hashType = ""
-	hashSha1    hashType = "sha1"
-	hashSha256  hashType = "sha256"
-	hashMd5     hashType = "md5"
+	algSha1   hashAlgorithm = "sha1"
+	algSha256 hashAlgorithm = "sha256"
+	algMd5    hashAlgorithm = "md5"
 )
 
 // generateSignature generates hmac signature using the hasher, secret
