@@ -12,13 +12,13 @@ Caddy v2 hmac middleware
 hmac [<name>] <algorithm> <secret>
 ```
 
-* **name** - [optional] if set, names the signature. It can then be referenced with `{hmac.name.signature}` instead.
+* **name** - [optional] if set, names the signature and available as `{hmac.name.signature}`.
 * **algorithm** - hash algorithm to use. Can be one of `sha1`, `sha256`, `md5`.
-* **secret** - the hmac secret key
+* **secret** - the hmac secret key.
 
 #### Example
 
-Validate a Github webhook secured with a secret.
+Run a [command](https://github.com/abiosoft/caddy-exec) after validating a Github webhook secured with a secret.
 
 ```
 @github {
@@ -29,7 +29,7 @@ Validate a Github webhook secured with a secret.
 }
 route @github {
     hmac sha1 {$GITHUB_WEBHOOK_SECRET}
-    ...
+    exec @hmac git pull origin master
 }
 ```
 
@@ -47,7 +47,7 @@ route @github {
           // required to indicate the handler
           "handler": "hmac",
           // [optional] if set, names the sigurature to be referenced
-          // as {hmac.name.signature} instead.
+          // as {hmac.name.signature}.
           "name": "",
           // the algorithm to use. can be sha1, sha256, md5
           "algorithm": "sha1",
