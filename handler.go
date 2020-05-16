@@ -2,6 +2,7 @@ package hmac
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"net/http"
 
@@ -34,19 +35,16 @@ func (m HMAC) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.H
 // copyRequestBody copies the request body while making it reusable.
 // It returns the copied []byte.
 func copyRequestBody(r *http.Request) ([]byte, error) {
-	// drain the body
-	body, err := ioutil.ReadAll(r.Body)
+	bodyCopy := bytes.Buffer{}
+	tee := io.TeeReader(r.Body, &bodyCopy)
+	body, err := ioutil.ReadAll(tee)
 	if err != nil {
 		return nil, err
 	}
-
-	// make a copy
-	bodyCopy := make([]byte, len(body))
-	copy(bodyCopy, body)
 
 	// replace the body
 	r.Body = ioutil.NopCloser(bytes.NewReader(body))
 
 	// return the copy
-	return bodyCopy, nil
+	return bodyCopy.Bytes(), nil
 }
