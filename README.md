@@ -4,6 +4,13 @@
 
 Caddy v2 hmac middleware
 
+## Installation
+
+```
+xcaddy build v2.0.0 \
+    --with github.com/abiosoft/caddy-hmac
+```
+
 ## Usage
 
 `hmac` computes the hash of the request body as a `{hmac.signature}` [placeholder](https://caddyserver.com/docs/caddyfile/concepts#placeholders) for other [matchers](https://caddyserver.com/docs/caddyfile/matchers) and [handlers](https://caddyserver.com/docs/caddyfile/directives).
