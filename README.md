@@ -24,6 +24,7 @@ Run a [command](https://github.com/abiosoft/caddy-exec) after validating a Githu
 
 ```
 @github {
+    path /webhook
     header_regexp X-Hub-Signature "[a-z0-9]+\=([a-z0-9]+)"
 }
 @hmac {
