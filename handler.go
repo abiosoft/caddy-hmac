@@ -23,7 +23,8 @@ func (m HMAC) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.H
 
 	repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
 
-	signature := generateSignature(m.hasher, m.Secret, body)
+	secret := repl.ReplaceAll(m.Secret, "")
+	signature := generateSignature(m.hasher, secret, body)
 	if err != nil {
 		return err
 	}
